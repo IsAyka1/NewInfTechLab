@@ -5,13 +5,14 @@ from ScoreModel import ScoreTable
 from Window import *
 from tkinter import *
 
-
 frame_top = 0
 this_window = 0
+
+
 def new_window():
     global this_window
     this_window = Toplevel()
-    this_window.geometry("500x500")
+    this_window.geometry("750x600")
     this_window.title("Дочерняя таблица")
     global frame_top
     frame_top = LabelFrame(this_window, text="База данных")
@@ -32,7 +33,6 @@ def update(list):
     label_score = Label(frame_top, text="score", padx=20, pady=10)
     label_score.grid(column=2, row=0)
 
-
     row_count = 1
     for item in list:
         label_id = Label(frame_top, text=item.id, padx=20, pady=10)
@@ -42,11 +42,11 @@ def update(list):
         label_score = Label(frame_top, text=item.score, padx=20, pady=10)
         label_score.grid(column=2, row=row_count)
         btn_delete = Button(frame_top, text="Delete", background="#555", foreground="#ccc",
-                     padx="10", pady="4", font="16", command=partial(click_delete, item.id))
+                            padx="10", pady="4", font="16", command=partial(click_delete, item.id))
         btn_delete.grid(column=3, row=row_count)
 
         btn_change = Button(frame_top, text="Change", background="#555", foreground="#ccc",
-                     padx="10", pady="4", font="16", command=partial(click_change, item.id))
+                            padx="10", pady="4", font="16", command=partial(click_change, item.id))
         btn_change.grid(column=4, row=row_count)
         row_count += 1
 
@@ -55,6 +55,7 @@ def click_delete(id):
     ScoreTable.delete_by_id(id)
 
     update(ScoreTable.select())
+
 
 def add_item():
     frame_add = LabelFrame(this_window, text="Добавление данных")
@@ -74,6 +75,7 @@ def add_item():
     btn = Button(frame_add, text="Add", background="#555", foreground="#ccc",
                  padx="20", pady="8", font="16", command=partial(click_add, owner_id, score))
     btn.grid(column=1, row=2)
+
 
 def click_add(owner, score):
     tmp = Player.select().where(Player.id == owner.get())
@@ -98,7 +100,6 @@ def click_save_changes(id, owner, score, window):
         update(ScoreTable.select())
     else:
         messagebox.showinfo("Неправильное значение", "Такого id не существует")
-
 
 
 def click_change(id):
@@ -126,6 +127,7 @@ def click_change(id):
                  padx="20", pady="8", font="16", command=partial(click_save_changes, item.id, owner_id, score, window))
     btn.grid(column=1, row=4)
 
+
 def click_filter(value, is_direction_on):
     dict_ = {"owner": ScoreTable.owner, "score": ScoreTable.score}
     result = None
@@ -136,8 +138,9 @@ def click_filter(value, is_direction_on):
 
     update(result)
 
+
 def filter_item():
-    frame_filter = LabelFrame(this_window, text="Фильтрация данных")
+    frame_filter = LabelFrame(this_window, text="Сортировка данных")
     frame_filter.pack(side=RIGHT, padx=50, pady=20)
     frame_f = LabelFrame(frame_filter)
     frame_f.pack(side=TOP)
@@ -151,13 +154,13 @@ def filter_item():
     frame_n = LabelFrame(frame_filter)
     frame_n.pack()
     is_direction_on = BooleanVar()
-    direction_on_chek = Radiobutton(frame_n, text="По-возрастанию", value=True, variable=is_direction_on, padx=15, pady=10)
+    direction_on_chek = Radiobutton(frame_n, text="По-возрастанию", value=True, variable=is_direction_on, padx=15,
+                                    pady=10)
     direction_on_chek.grid(row=1, column=0)
     direction_off_chek = Radiobutton(frame_n, text="По-убыванию", value=False, variable=is_direction_on, padx=15,
-                                    pady=10)
+                                     pady=10)
     direction_off_chek.grid(row=2, column=0)
 
     btn = Button(frame_filter, text="Filter", background="#555", foreground="#ccc",
                  padx="20", pady="8", font="16", command=partial(click_filter, value, is_direction_on))
     btn.pack(side=BOTTOM)
-

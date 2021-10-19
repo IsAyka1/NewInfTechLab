@@ -6,6 +6,7 @@ from NewWindow import *
 
 frame_top = 0
 
+
 def click_add(f_name, l_name, age, score):
     Player.create(first_name=f_name.get(),
                   last_name=l_name.get(),
@@ -36,7 +37,7 @@ def click_filter(value, is_direction_on):
 
 
 def create_window(root):
-    root.title("Windows-приложение на Python с использованием базы данных")
+    root.title("БД")
     root.geometry("800x600")
     global frame_top
     frame_top = LabelFrame(root, text="База данных")
@@ -112,10 +113,11 @@ def filter_db():
     frame_n = LabelFrame(frame_filter)
     frame_n.pack()
     is_direction_on = BooleanVar()
-    direction_on_chek = Radiobutton(frame_n, text="По-возрастанию", value=True, variable=is_direction_on, padx=15, pady=10)
+    direction_on_chek = Radiobutton(frame_n, text="По-возрастанию", value=True, variable=is_direction_on, padx=15,
+                                    pady=10)
     direction_on_chek.grid(row=1, column=0)
     direction_off_chek = Radiobutton(frame_n, text="По-убыванию", value=False, variable=is_direction_on, padx=15,
-                                    pady=10)
+                                     pady=10)
     direction_off_chek.grid(row=2, column=0)
 
     btn = Button(frame_filter, text="Filter", background="#555", foreground="#ccc",
@@ -138,16 +140,17 @@ def update_db(players):
         label_score = Label(frame_top, text=player.max_score, padx=20, pady=10)
         label_score.grid(column=4, row=row_count)
         btn_delete = Button(frame_top, text="Delete", background="#555", foreground="#ccc",
-                     padx="10", pady="4", font="16", command=partial(click_delete, player.id))
+                            padx="10", pady="4", font="16", command=partial(click_delete, player.id))
         btn_delete.grid(column=5, row=row_count)
         btn_change = Button(frame_top, text="Change", background="#555", foreground="#ccc",
-                     padx="10", pady="4", font="16", command=partial(click_change, player.id))
+                            padx="10", pady="4", font="16", command=partial(click_change, player.id))
         btn_change.grid(column=6, row=row_count)
         row_count += 1
 
+
 def click_save_changes(id, f_name, l_name, age, max_score, this_window):
     quary = Player.update({Player.first_name: f_name.get(), Player.last_name: l_name.get(), Player.age: age.get(),
-                               Player.max_score: max_score.get()}).where(Player.id == id)
+                           Player.max_score: max_score.get()}).where(Player.id == id)
     quary.execute()
     this_window.destroy()
     window(Player.select())
@@ -187,5 +190,6 @@ def click_change(id):
     entry_score.grid(column=1, row=3)
 
     btn = Button(window, text="Save", background="#555", foreground="#ccc",
-                 padx="20", pady="8", font="16", command=partial(click_save_changes, item.id, f_name, l_name, age, max_score, window))
+                 padx="20", pady="8", font="16",
+                 command=partial(click_save_changes, item.id, f_name, l_name, age, max_score, window))
     btn.grid(column=1, row=4)
