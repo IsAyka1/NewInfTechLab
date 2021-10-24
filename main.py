@@ -1,7 +1,6 @@
 from Window import *
 from ScoreModel import *
 
-
 if __name__ == '__main__':
     db.create_tables([Player, ScoreTable])
     root = Tk()
