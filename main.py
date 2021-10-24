@@ -1,13 +1,16 @@
-from Window import *
-from ScoreModel import *
+from tkinter import *
+from ShowResponse import show_response
+from ShowNewStruct import show_new_struct
+from ShowTreeView import show_treeview
+
+
+def main(root):
+    show_response(root)
+    show_treeview(root)
+    show_new_struct(root)
+
 
 if __name__ == '__main__':
-    db.create_tables([Player, ScoreTable])
     root = Tk()
-    create_window(root)
-
-    btn_new_window = Button(text="Another table", background="#555", foreground="#ccc",
-                            padx="20", pady="8", font="16", command=new_window)
-    btn_new_window.pack(side=BOTTOM, padx=30, pady=20)
-
+    main(root)
     root.mainloop()
