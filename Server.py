@@ -16,22 +16,21 @@ sock.listen(1)
 state = None
 command = None
 first_string = None
-count = 0
 numbers = None
 
 
 def warmup_first(response_data: str):
     global state
     str_numbers = response_data.split(' ')
-    if len(str_numbers) is not 3:
-        raise Exception("Количество числе: " + str(len(str_numbers)))
+    if len(str_numbers) != 3:
+        raise Exception("Количество числел: " + str(len(str_numbers)))
     state = None
-    return "".join([str(int(str_numbers[i]) ** 2) + " " if i is not 2 else str(int(str_numbers[i]) ** 2) for i in range(len(str_numbers))])
+    return "".join([str(int(str_numbers[i]) ** 2) + " " if i != 2 else str(int(str_numbers[i]) ** 2) for i in range(len(str_numbers))])
 
 
 def warmup_second(response_data: str):
     global first_string, state
-    if first_string is None:
+    if first_string == None:
         first_string = response_data
         return None
     concat = first_string + response_data
@@ -41,14 +40,13 @@ def warmup_second(response_data: str):
 
 def warmup_third(response_data: str):
     global command, state
-    print(command, " ", state, " ", response_data)
-    if command is None:
+    if command == None:
         command = int(response_data)
         return None
-    if command is 0:
+    if command == 0:
         state = command = None
         return str(int(response_data) ** 2)
-    if command is 1:
+    if command == 1:
         command = int(response_data)
         return None
     state = command = None
@@ -56,47 +54,56 @@ def warmup_third(response_data: str):
 
 
 def task_first(response_data: str):
-    global state, count
-    if int(response_data) is 0:
-        tmp_count = count
-        state, count = None, 0
-        return str(tmp_count)
-    count = count + 1
-    return None
+    global state
+    state = None
+    str_numbers = response_data.split(' ')
+    if len(str_numbers) != 2:
+        raise Exception("Количество числел: " + str(len(str_numbers)))
+    str_multi = "Произведение: " + str(int(str_numbers[0]) * int(str_numbers[1]))
+    str_sum = "Сумма: " + str(int(str_numbers[0]) + int(str_numbers[1]))
+    return str_multi + " " + str_sum
 
 
 def task_second(response_data: str):
-    global state, numbers
-    if numbers is None:
-        numbers = response_data.split(' ')
-        return None
-    strings = response_data.split(' ')
-    result_str = "".join(["'" + n + " " + s + "'" for s in strings for n in numbers])
-    state = numbers = None
-    return result_str
-
+    global state, command
+    if command == None:
+        if int(response_data) == 0:
+            command = 0
+            return None
+        if int(response_data) != 0:
+            command = 1
+            return None
+    if command == 0:
+        state = command = None
+        strings = response_data.split(' ')
+        return "".join([s for s in strings])
+    if command == 1:
+        state = command = None
+        str_numbers = response_data.split(' ')
+        return str(sum([int(s) for s in str_numbers]))
+    state = command = None
+    return None
 
 def choose_job(response_data: bytes):
-    global state, command, first_string, count, numbers
+    global state, command, first_string, numbers
     try:
-        if state is None:
-            state = int(data.decode())
+        if state == None:
+            state = int(response_data.decode())
             return None
-        if state is 1:
+        if state == 1:
             return warmup_first(response_data.decode())
-        if state is 2:
+        if state == 2:
             return warmup_second(response_data.decode())
-        if state is 3:
+        if state == 3:
             return warmup_third(response_data.decode())
-        if state is 4:
+        if state == 4:
             return task_first(response_data.decode())
-        if state is 5:
+        if state == 5:
             return task_second(response_data.decode())
         state = None
     except Exception as ex:
         print(ex)
         state = command = first_string = numbers = None
-        count = 0
         return None
 
 
@@ -108,11 +115,6 @@ while True:
         print('Подключено к:', client_address)
         while True:
             data = connection.recv(100)
-            # has_data = True if len(data) > 1 else False
-            # while has_data:
-            #     resp_data = connection.recv(100)
-            #     has_data = True if resp_data else False
-            #     data = data + resp_data
             if data:
                 result = choose_job(data)
                 if result:
